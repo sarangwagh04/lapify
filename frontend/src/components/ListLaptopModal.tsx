@@ -35,6 +35,8 @@ type FormInput = z.input<typeof formSchema>;
 
 export function ListLaptopModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const {
     register,
@@ -93,6 +95,8 @@ export function ListLaptopModal({ isOpen, onClose }: { isOpen: boolean; onClose:
     reset();
     imagePreviews.forEach(url => URL.revokeObjectURL(url));
     setImagePreviews([]);
+    setIsSuccess(false);
+    setSubmitError(null);
     onClose();
   };
 
@@ -109,12 +113,59 @@ export function ListLaptopModal({ isOpen, onClose }: { isOpen: boolean; onClose:
   };
 
   const onSubmit = async (data: FormValues) => {
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    console.log("Form Data Submitted:", data);
-    alert("Laptop listed successfully!");
-    handleClose();
+    setSubmitError(null);
+    try {
+      const formData = new FormData();
+      formData.append("brand", data.brand);
+      formData.append("model", data.model);
+      formData.append("condition", data.condition);
+      formData.append("price", data.price.toString());
+      formData.append("name", data.name);
+      formData.append("phone", data.phone);
+
+      const filesArray = Array.from(watchImages as FileList);
+      filesArray.forEach((file) => {
+        formData.append("images", file);
+      });
+
+      const response = await fetch("http://localhost:8000/api/listings", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || "Failed to submit listing");
+      }
+
+      setIsSuccess(true);
+    } catch (error: any) {
+      console.error("Submission Error:", error);
+      setSubmitError(`Submission failed: ${error.message}`);
+    }
   };
+
+  if (isSuccess) {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+        <div className="bg-gray-900 border border-gray-800 w-full max-w-sm rounded-2xl shadow-2xl relative animate-in zoom-in-95 duration-200 flex flex-col items-center justify-center p-8 text-center">
+          <div className="w-16 h-16 bg-green-500/20 text-green-400 rounded-full flex items-center justify-center mb-6">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </div>
+          <h2 className="text-2xl font-bold text-white mb-2">Listed Successfully!</h2>
+          <p className="text-gray-400 mb-8">Your laptop has been listed and is now visible to buyers.</p>
+          <button 
+            onClick={handleClose}
+            className="w-full py-2.5 px-4 bg-gray-800 hover:bg-gray-700 text-white rounded-lg font-medium transition-colors"
+          >
+            Done
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
@@ -299,26 +350,33 @@ export function ListLaptopModal({ isOpen, onClose }: { isOpen: boolean; onClose:
           </div>
 
           {/* Footer */}
-          <div className="pt-4 flex flex-col-reverse sm:flex-row sm:justify-end gap-3 border-t border-gray-800 mt-6">
-            <button
-              type="button"
-              onClick={handleClose}
-              className="px-4 py-2 text-sm font-medium text-gray-300 bg-transparent hover:bg-gray-800 rounded-lg transition-colors w-full sm:w-auto"
-            >
-              Cancel
-            </button>
-            <button 
-              type="submit" 
-              disabled={isSubmitting}
-              className="px-6 py-2 text-sm font-medium text-white bg-purple-600 hover:bg-purple-500 rounded-lg shadow-lg shadow-purple-500/25 transition-all disabled:opacity-50 flex items-center justify-center gap-2 w-full sm:w-auto"
-            >
-              {isSubmitting ? "Validating & Submitting..." : (
-                <>
-                  <Upload size={16} />
-                  Submit Listing
-                </>
-              )}
-            </button>
+          <div className="pt-4 flex flex-col gap-3 border-t border-gray-800 mt-6">
+            {submitError && (
+              <div className="p-3 mb-2 bg-red-500/10 border border-red-500/30 text-red-400 text-sm rounded-lg text-center">
+                {submitError}
+              </div>
+            )}
+            <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-3">
+              <button 
+                type="button" 
+                onClick={handleClose}
+                className="px-4 py-2 text-sm font-medium text-gray-300 bg-transparent hover:bg-gray-800 rounded-lg transition-colors w-full sm:w-auto"
+              >
+                Cancel
+              </button>
+              <button 
+                type="submit" 
+                disabled={isSubmitting}
+                className="px-6 py-2 text-sm font-medium text-white bg-purple-600 hover:bg-purple-500 rounded-lg shadow-lg shadow-purple-500/25 transition-all disabled:opacity-50 flex items-center justify-center gap-2 w-full sm:w-auto"
+              >
+                {isSubmitting ? "Validating & Submitting..." : (
+                  <>
+                    <Upload size={16} />
+                    Submit Listing
+                  </>
+                )}
+              </button>
+            </div>
           </div>
         </form>
         </div>
