@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { X, Upload, Laptop, DollarSign, User, Mail, Phone } from "lucide-react";
+import { X, Upload, Laptop, DollarSign, User, Phone } from "lucide-react";
 
 export function ListLaptopModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -20,14 +20,14 @@ export function ListLaptopModal({ isOpen, onClose }: { isOpen: boolean; onClose:
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
       <div className="bg-gray-900 border border-gray-800 w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden relative animate-in zoom-in-95 duration-200">
-        
+
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-800">
           <div>
             <h2 className="text-xl font-semibold text-white">List Your Laptop</h2>
             <p className="text-sm text-gray-400 mt-1">Get an instant estimate for your used device.</p>
           </div>
-          <button 
+          <button
             onClick={onClose}
             className="p-2 text-gray-400 hover:text-white hover:bg-gray-800 rounded-full transition-colors"
           >
@@ -52,7 +52,7 @@ export function ListLaptopModal({ isOpen, onClose }: { isOpen: boolean; onClose:
                 </select>
               </div>
             </div>
-            
+
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-300">Model / Specs</label>
               <input required type="text" placeholder="e.g. MacBook Pro M1 16GB" className="w-full bg-gray-800 border border-gray-700 rounded-lg py-2 px-3 text-white text-sm focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500" />
@@ -97,15 +97,15 @@ export function ListLaptopModal({ isOpen, onClose }: { isOpen: boolean; onClose:
 
           {/* Footer */}
           <div className="pt-4 flex justify-end gap-3 border-t border-gray-800 mt-6">
-            <button 
-              type="button" 
+            <button
+              type="button"
               onClick={onClose}
               className="px-4 py-2 text-sm font-medium text-gray-300 bg-transparent hover:bg-gray-800 rounded-lg transition-colors"
             >
               Cancel
             </button>
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               disabled={isSubmitting}
               className="px-6 py-2 text-sm font-medium text-white bg-purple-600 hover:bg-purple-500 rounded-lg shadow-lg shadow-purple-500/25 transition-all disabled:opacity-50 flex items-center gap-2"
             >
