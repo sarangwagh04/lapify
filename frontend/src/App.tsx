@@ -1,9 +1,11 @@
 import { useState } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import KineticGrid from "@/components/ui/kinetic-grid";
 import { ListLaptopModal } from "@/components/ListLaptopModal";
 import { ArrowRight, ShieldCheck, Zap, RefreshCw } from "lucide-react";
+import { AdminPortal } from "@/pages/AdminPortal";
 
-export default function Default() {
+function LandingPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
@@ -67,5 +69,16 @@ export default function Default() {
 
       <ListLaptopModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </>
+  );
+}
+
+export default function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/admin" element={<AdminPortal />} />
+      </Routes>
+    </Router>
   );
 }

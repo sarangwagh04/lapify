@@ -19,3 +19,6 @@ venv.bak/
 # OS specific files
 .DS_Store
 Thumbs.db
+
+# User uploads
+uploads/
