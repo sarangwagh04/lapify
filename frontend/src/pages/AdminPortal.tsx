@@ -116,8 +116,8 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
                   <tr key={listing.id} className="hover:bg-gray-800/50 transition-colors">
                     <td className="px-6 py-4 text-gray-500">#{listing.id}</td>
                     <td className="px-6 py-4">
-                      <div className="font-medium text-gray-200">{listing.brand}</div>
-                      <div className="text-xs text-gray-500 mt-0.5">{listing.model_name}</div>
+                      <div className="font-medium text-gray-200 capitalize">{listing.brand}</div>
+                      <div className="text-xs text-gray-500 mt-0.5 capitalize">{listing.model_name}</div>
                     </td>
                     <td className="px-6 py-4">
                       <span className={`px-2.5 py-1 rounded-full text-xs font-medium border ${
